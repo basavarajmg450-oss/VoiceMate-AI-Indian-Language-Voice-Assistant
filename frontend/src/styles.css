@@ -2,7 +2,7 @@
 
 :root{font-family:'DM Sans',sans-serif;color:#eaf0fb;background:#0a1020;font-synthesis:none;text-rendering:optimizeLegibility}
 *{box-sizing:border-box}
-body{margin:0;min-width:320px;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,#1c3157 0%,#0c1529 43%,#080e1b 100%)}
+body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at 50% -15%,#1c3157 0%,#0c1529 43%,#080e1b 100%)}
 button,select,textarea{font:inherit}
 .page-shell{max-width:1120px;margin:0 auto;padding:0 28px 34px}
 .topbar{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(180,202,240,.12)}
@@ -63,3 +63,4 @@ audio{height:34px;max-width:270px;width:100%}
 footer{display:flex;justify-content:space-between;gap:12px;padding:28px 2px 0;color:#657795;font-size:10px}
 .spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:760px){.page-shell{padding:0 16px 25px}.hero{padding:48px 0 32px}h1{letter-spacing:-2px}.workspace{grid-template-columns:1fr}.panel{min-height:0;padding:21px}.panel-transcript textarea{height:160px}footer{flex-direction:column;align-items:center;gap:7px}.audio-result{align-items:flex-start}audio{max-width:100%}}
+@media(max-width:400px){.page-shell{padding:0 12px 22px}.topbar{height:66px}.brand{font-size:17px;gap:8px}.brand-mark{width:30px;height:30px;border-radius:9px}.powered{font-size:10px;gap:6px}.eyebrow{font-size:9px;letter-spacing:1.2px;padding:7px 10px}h1{letter-spacing:-1.5px}.panel{padding:18px}.status-bar{font-size:11px;align-items:flex-start}.audio-result{padding:12px}.audio-info{min-width:0}}

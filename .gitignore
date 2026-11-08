@@ -29,6 +29,10 @@ lerna-debug.log*
 .eslintcache
 *.tsbuildinfo
 
+# Deployment platform local state
+.vercel/
+.render/
+
 # Test / coverage output
 coverage/
 .nyc_output/

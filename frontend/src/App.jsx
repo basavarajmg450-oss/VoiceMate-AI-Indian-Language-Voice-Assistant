@@ -4,7 +4,9 @@ import {
   Languages, Headphones, LoaderCircle, Copy, Check, AlertCircle
 } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+// VITE_API_BASE_URL is injected at build time (Vercel → Environment Variables).
+// The localhost fallback only applies when the variable is absent, i.e. local development.
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:5000").trim().replace(/\/+$/, "");
 
 const LANGUAGES = [
   { label: "Auto detect (Prisma)", stt: "indic-auto", tts: "auto", voice: "Kaveri" },
@@ -85,8 +87,11 @@ export default function App() {
 
   async function startRecording() {
     try {
+      if (!window.isSecureContext) {
+        throw new Error("Microphone access needs a secure (https) page. Open the deployed site over HTTPS.");
+      }
       if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error("Microphone recording is unavailable. Open the app on localhost using Chrome or Edge.");
+        throw new Error("Microphone recording is unavailable in this browser. Use Chrome, Edge or Safari.");
       }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -145,7 +150,7 @@ export default function App() {
         message: `Transcription complete · ${result.detected_language_code || language.stt} · ${result.model || "Prisma"}`
       });
     } catch (error) {
-      setStatus({ type: "error", message: `${error.message}. Check that the backend is running and your API key has STT access.` });
+      setStatus({ type: "error", message: `${error.message} Check that the backend is running and your API key has STT access.` });
     } finally {
       setBusy("");
     }
@@ -182,7 +187,7 @@ export default function App() {
       setAudioUrl(nextUrl);
       setStatus({ type: "success", message: "Speech generated successfully. Press Play to listen." });
     } catch (error) {
-      setStatus({ type: "error", message: `${error.message}. Check your Timbre voice, language, credits and TTS access.` });
+      setStatus({ type: "error", message: `${error.message} Check your Timbre voice, language, credits and TTS access.` });
     } finally {
       setBusy("");
     }

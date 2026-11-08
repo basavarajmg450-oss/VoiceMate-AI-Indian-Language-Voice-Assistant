@@ -1,0 +1,23 @@
+# Optional Render Blueprint.
+# Render → New → Blueprint → pick this repo, or configure the service manually
+# in the dashboard using the same values (Root Directory: backend).
+services:
+  - type: web
+    name: voicemate-ai-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GNANI_TIMEOUT_MS
+        value: "90000"
+      # Set these in the Render dashboard; they are never stored in the repo.
+      - key: GNANI_API_KEY
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
