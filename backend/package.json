@@ -5,7 +5,7 @@
   "description": "VoiceMate AI Express backend for Gnani Prisma and Timbre",
   "main": "server.js",
   "engines": {
-    "node": ">=20.0.0"
+    "node": "22.x"
   },
   "scripts": {
     "start": "node server.js",
