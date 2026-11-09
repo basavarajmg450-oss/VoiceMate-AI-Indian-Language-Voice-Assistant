@@ -9,7 +9,7 @@ A voice assistant for Indian languages built for the **Great Indian AI Internshi
 - **Deployment:** Vercel (frontend) + Render (backend)
 
 Live demo: _add your Vercel URL here after deploying_
-API: _add your Render URL here after deploying_
+API: <https://voicemate-ai-api.onrender.com> (verified live)
 
 ---
 
