@@ -3,13 +3,23 @@
 A voice assistant for Indian languages built for the **Great Indian AI Internship Challenge by Gnani AI**. Record speech in the browser, get an instant transcript from **Gnani Prisma**, then hear any text spoken back by **Gnani Timbre**.
 
 - **Frontend:** React 18 + Vite 6
-- **Backend:** Node.js 20+ + Express 4
+- **Backend:** Node.js 22 LTS + Express 4
 - **Speech-to-Text:** Gnani Prisma v3.0
 - **Text-to-Speech:** Gnani Timbre v2.5
 - **Deployment:** Vercel (frontend) + Render (backend)
 
-Live demo: _add your Vercel URL here after deploying_
-API: <https://voicemate-ai-api.onrender.com> (verified live)
+## Live deployment
+
+| | URL |
+| --- | --- |
+| **App (evaluators start here)** | <https://voicemate-ai-psi.vercel.app> |
+| **API** | <https://voicemate-ai-api.onrender.com> |
+| **Health check** | <https://voicemate-ai-api.onrender.com/api/health> |
+| **Source** | <https://github.com/basavarajmg450-oss/VoiceMate-AI-Indian-Language-Voice-Assistant> |
+
+Status: both services are deployed and verified working end to end — see [Production verification](#production-verification).
+
+> The Render free instance sleeps after ~15 minutes without traffic, so the first request can take up to a minute while it wakes. Open the health check URL a moment before testing.
 
 ---
 
@@ -60,7 +70,7 @@ The frontend is fully static. All Gnani calls happen on the backend, so the API 
 
 ## Local development
 
-Requirements: Node.js 20+ and npm. Chrome or Edge recommended for microphone capture.
+Requirements: Node.js 22 LTS (`backend/package.json` pins `engines.node` to `22.x`) and npm. Chrome or Edge recommended for microphone capture.
 
 **1. Backend**
 
@@ -150,7 +160,7 @@ Errors are JSON: `{ "error": "human readable message", "upstream_status": 401, "
 | Variable | Required | Example | Notes |
 | --- | --- | --- | --- |
 | `GNANI_API_KEY` | yes | `…` | Secret. Backend only. |
-| `FRONTEND_ORIGIN` | yes in production | `https://voicemate-ai.vercel.app` | Comma-separated allowlist of browser origins. Localhost is always allowed. |
+| `FRONTEND_ORIGIN` | yes in production | `https://voicemate-ai-psi.vercel.app` | Comma-separated allowlist of browser origins. Localhost is always allowed. |
 | `PORT` | injected | `10000` | Render sets this; do not hardcode. |
 | `HOST` | no | `0.0.0.0` | Default is `0.0.0.0`. |
 | `GNANI_TIMEOUT_MS` | no | `90000` | Upstream timeout before returning 504. |
@@ -192,12 +202,31 @@ Free instance behaviour: the service sleeps after ~15 minutes without traffic an
 
 `frontend/vercel.json` adds the SPA fallback and immutable caching for hashed assets.
 
+## Production verification
+
+Verified against the live deployment on 10 November 2026:
+
+| Check | Result |
+| --- | --- |
+| Frontend over HTTPS | 200, Vite bundle `/assets/index-*.js`, 158.8 kB |
+| Backend health | 200, `gnani_configured:true` |
+| CORS preflight from the Vercel origin | 204, `access-control-allow-origin: https://voicemate-ai-psi.vercel.app` |
+| CORS from an unlisted origin | No `access-control-allow-origin` header |
+| Timbre text-to-speech | 200, `audio/wav`, 337,964-byte WAV, 4.0 s |
+| Prisma speech-to-text (that WAV fed back) | 200, transcript matched, 2.6 s |
+| Secrets in the browser bundle | No `X-API-Key-ID`, no `GNANI_API_KEY` |
+| `localhost` in production requests | 0 occurrences; bundle targets the Render host |
+| Upload validation | `.txt` → 400, missing field → 400, 16 MB → 413, upstream timeout → 504 |
+
+To repeat it yourself:
+
 ## Production checklist
 
 ```bash
-curl https://<api>.onrender.com/api/health          # 200 + gnani_configured:true
-curl -I https://<app>.vercel.app                    # 200, https
-curl -X POST https://<api>.onrender.com/api/tts -H "Content-Type: application/json" -d '{"text":"test"}' -o out.wav
+curl https://voicemate-ai-api.onrender.com/api/health   # 200 + gnani_configured:true
+curl -I https://voicemate-ai-psi.vercel.app             # 200, https
+curl -X POST https://voicemate-ai-api.onrender.com/api/tts \
+  -H "Content-Type: application/json" -d '{"text":"test"}' -o out.wav
 ```
 
 In the browser: record a short clip, confirm the transcript appears, generate speech, play and download it, and verify DevTools → Network shows only the Render host (no `localhost`) and no `X-API-Key-ID` request header.
